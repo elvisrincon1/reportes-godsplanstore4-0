@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reportar Ventas - GodsPlan Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script defer src="main.js"></script>
+  </head>
+<body class="bg-gray-100 font-['Roboto'] min-h-screen flex flex-col">
+  <header class="bg-blue-700 text-white p-4 shadow">
+    <h1 class="text-2xl font-bold">Reportar Ventas - GodsPlan Store</h1>
+  </header>
+  <nav class="bg-white shadow flex space-x-4 p-3">
+    <button data-section="reportar-venta" class="nav-btn px-3 py-2 rounded hover:bg-blue-100 font-semibold text-blue-700">Reportar Venta</button>
+    <button data-section="inventario" class="nav-btn px-3 py-2 rounded hover:bg-blue-100 font-semibold text-blue-700">Inventario</button>
+    <button data-section="proveedores" class="nav-btn px-3 py-2 rounded hover:bg-blue-100 font-semibold text-blue-700">Proveedores</button>
+    <button data-section="afiliados" class="nav-btn px-3 py-2 rounded hover:bg-blue-100 font-semibold text-blue-700">Afiliados</button>
+    <button data-section="generar-informe" class="nav-btn px-3 py-2 rounded hover:bg-blue-100 font-semibold text-blue-700">Generar Informe</button>
+  </nav>
+  <main class="flex-grow p-6">
+    <section id="reportar-venta" class="section hidden">
+      <h2 class="text-xl font-semibold mb-4">Reportar Venta</h2>
+      <form id="form-reportar-venta" class="mb-4 space-y-4 max-w-lg">
+        <div>
+          <label for="input-afiliado" class="block font-medium mb-1">Afiliado</label>
+          <input
+            type="text"
+            id="input-afiliado"
+            placeholder="Buscar afiliado..."
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            autocomplete="off"
+            required
+          />
+          <ul id="lista-afiliados-sugeridos" class="border border-gray-300 rounded max-h-32 overflow-y-auto mt-1 hidden bg-white z-10 absolute w-full"></ul>
+        </div>
+        <div>
+          <label for="select-producto" class="block font-medium mb-1">Producto</label>
+          <select id="select-producto" class="border border-gray-300 rounded px-3 py-2 w-full" required>
+            <option value="">Seleccione un producto</option>
+          </select>
+        </div>
+        <div>
+          <label for="input-fecha-venta" class="block font-medium mb-1">Fecha de la venta</label>
+          <input
+            type="date"
+            id="input-fecha-venta"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            required
+          />
+        </div>
+        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+          Reportar Venta
+        </button>
+      </form>
+      <h3 class="text-lg font-semibold mb-2">Ventas reportadas</h3>
+      <ul id="lista-ventas" class="space-y-2 max-h-64 overflow-y-auto max-w-lg">
+        <!-- Lista de ventas -->
+      </ul>
+    </section>
+    <section id="inventario" class="section hidden">
+      <h2 class="text-xl font-semibold mb-4">Inventario</h2>
+      <form id="form-inventario" class="mb-4 space-y-4 max-w-lg">
+        <div>
+          <label for="input-nombre-producto" class="block font-medium mb-1">Nombre del producto</label>
+          <input
+            type="text"
+            id="input-nombre-producto"
+            placeholder="Nombre del producto"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            required
+          />
+        </div>
+        <div>
+          <label for="input-precio-compra" class="block font-medium mb-1">Precio de compra</label>
+          <input
+            type="number"
+            id="input-precio-compra"
+            placeholder="Precio de compra"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+        <div>
+          <label for="input-precio-venta" class="block font-medium mb-1">Precio de venta</label>
+          <input
+            type="number"
+            id="input-precio-venta"
+            placeholder="Precio de venta"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+        <div>
+          <label for="select-proveedor-1" class="block font-medium mb-1">Proveedor 1</label>
+          <input
+            type="text"
+            id="select-proveedor-1"
+            placeholder="Buscar proveedor 1"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            autocomplete="off"
+            required
+          />
+          <ul id="lista-proveedor-1" class="border border-gray-300 rounded max-h-32 overflow-y-auto mt-1 hidden bg-white z-10 absolute w-full"></ul>
+        </div>
+        <div>
+          <label for="select-proveedor-2" class="block font-medium mb-1">Proveedor 2 (opcional)</label>
+          <input
+            type="text"
+            id="select-proveedor-2"
+            placeholder="Buscar proveedor 2"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            autocomplete="off"
+          />
+          <ul id="lista-proveedor-2" class="border border-gray-300 rounded max-h-32 overflow-y-auto mt-1 hidden bg-white z-10 absolute w-full"></ul>
+        </div>
+        <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+          Agregar Producto
+        </button>
+      </form>
+      <input
+        type="text"
+        id="buscar-producto"
+        placeholder="Buscar producto..."
+        class="border border-gray-300 rounded px-3 py-2 mb-4 w-full max-w-lg"
+      />
+      <ul id="lista-inventario" class="space-y-2 max-h-64 overflow-y-auto max-w-lg">
+        <!-- Lista de productos -->
+      </ul>
+    </section>
+    <section id="proveedores" class="section hidden">
+      <h2 class="text-xl font-semibold mb-4">Proveedores</h2>
+      <form id="form-proveedor" class="mb-4 flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+        <input
+          type="text"
+          id="input-nombre-proveedor"
+          placeholder="Nombre del proveedor"
+          class="border border-gray-300 rounded px-3 py-2 flex-grow mb-2 sm:mb-0"
+          required
+        />
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          Agregar Proveedor
+        </button>
+      </form>
+      <input
+        type="text"
+        id="buscar-proveedor"
+        placeholder="Buscar proveedor..."
+        class="border border-gray-300 rounded px-3 py-2 mb-4 w-full"
+      />
+      <ul id="lista-proveedores" class="space-y-2 max-h-64 overflow-y-auto">
+        <!-- Lista de proveedores -->
+      </ul>
+    </section>
+    <section id="afiliados" class="section hidden">
+      <h2 class="text-xl font-semibold mb-4">Afiliados</h2>
+      <form id="form-afiliado" class="mb-4 flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+        <input
+          type="text"
+          id="input-nombre-afiliado"
+          placeholder="Nombre del afiliado"
+          class="border border-gray-300 rounded px-3 py-2 flex-grow mb-2 sm:mb-0"
+          required
+        />
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+          Agregar Afiliado
+        </button>
+      </form>
+      <input
+        type="text"
+        id="buscar-afiliado"
+        placeholder="Buscar afiliado..."
+        class="border border-gray-300 rounded px-3 py-2 mb-4 w-full"
+      />
+      <ul id="lista-afiliados" class="space-y-2 max-h-64 overflow-y-auto">
+        <!-- Lista de afiliados -->
+      </ul>
+    </section>
+    <section id="generar-informe" class="section hidden">
+      <h2 class="text-xl font-semibold mb-4">Generar Informe</h2>
+      <form id="form-generar-informe" class="mb-4 max-w-lg space-y-4">
+        <div>
+          <label for="fecha-inicio" class="block font-medium mb-1">Fecha inicio</label>
+          <input
+            type="date"
+            id="fecha-inicio"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            required
+          />
+        </div>
+        <div>
+          <label for="fecha-fin" class="block font-medium mb-1">Fecha fin</label>
+          <input
+            type="date"
+            id="fecha-fin"
+            class="border border-gray-300 rounded px-3 py-2 w-full"
+            required
+          />
+        </div>
+        <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
+          Generar Informe
+        </button>
+      </form>
+      <div id="informe-container" class="overflow-auto max-w-full">
+        <!-- Informe generado aparecerá aquí -->
+      </div>
+      <div class="mt-4 space-x-4">
+        <button id="btn-exportar-pdf" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+          Exportar a PDF
+        </button>
+        <button id="btn-exportar-xlsx" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+          Exportar a XLSX
+        </button>
+      </div>
+    </section>
+  </main>
+  <footer class="bg-gray-200 text-center p-4 text-sm text-gray-600">
+    &copy; 2024 GodsPlan Store - Reportar Ventas
+  </footer>
+</body>
+</html>
