@@ -1,4 +1,4 @@
-// main.js - Actualizado para integración con backend API REST
+// main.js - Mejoras para cumplir con los requisitos detallados
 
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE = '/.netlify/functions';
